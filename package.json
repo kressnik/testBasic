@@ -1,0 +1,14 @@
+{
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "serve": "nodemon index.js",
+    "start": "mode index.js"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7",
+    "require-dir-all": "^0.4.15"
+  }
+}
