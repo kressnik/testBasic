@@ -1,6 +1,6 @@
 {
-  "name": "test-basic", 
-  "version": "1.0.0", 
+  "name": "test-basic",
+  "version": "1.0.0",
   "description": "Computing service",
   "main": "index.js",
   "type": "commonjs",
@@ -16,6 +16,6 @@
     "require-dir-all": "^0.4.15",
     "sequelize": "^6.6.2"
   },
-  "author": "Ruslan Bevz", 
+  "author": "Ruslan Bevz",
   "license": "MIT"
 }
