@@ -19,6 +19,7 @@ async function start() {
     app.use(express.static(path.resolve(__dirname, 'static')));
     app.use(serverRoutes);
     app.use(defaultRoute);
+    app.use(express.json());
     app.listen(PORT, () => {
       console.log(`Server started on port ${PORT}`);
     });
