@@ -8,12 +8,24 @@ const serverRoutes = require('./routers/index.js');
 
 const PORT = process.env.PORT || 3000;
 
-async function start() {
-  try {
+startDB();
 
+async function startDB() {
+  try {
     await sequelize.authenticate();
     await sequelize.sync();
 
+    console.log('Database connected');
+
+    startServer();
+  } catch (error) {
+    console.error('Database connect error');
+    process.exit(-1);
+  }
+}
+
+function startServer() {
+  try {
     const app = express();
 
     app.use(express.static(path.resolve(__dirname, 'static')));
@@ -28,8 +40,6 @@ async function start() {
     console.error(error);
   }
 }
-
-start();
 
 function defaultRoute(req, res) {
   res.status(404).send({
