@@ -1,3 +1,4 @@
+'use strict';
 const express = require('express');
 const { getAll } = require('../controllers/calculate.js');
 const router = express.Router();

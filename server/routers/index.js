@@ -14,15 +14,16 @@ useAll(routesFile);
 
 async function useAll(routes) {
   try {
-    const use = (routes) => { //use all routes 
+    const use = routes => { //use all routes
+      // eslint-disable-next-line no-unused-vars
       for (const [key, route] of Object.entries(routes)) {
-        if (typeof route === "function") {
+        if (typeof route === 'function') {
           app.use(route);
         } else {
           use(route);
         }
       } //for
-    }
+    };
 
     use(routes);
   } catch (error) {
