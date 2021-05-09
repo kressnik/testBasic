@@ -28,10 +28,12 @@ function startServer() {
   try {
     const app = express();
 
+    app.use(express.urlencoded({ extended: true }));
+    app.use(express.json());
+
     app.use(express.static(path.resolve(__dirname, 'static')));
     app.use(serverRoutes);
     app.use(defaultRoute);
-    app.use(express.json());
     app.listen(PORT, () => {
       console.log(`Server started on port ${PORT}`);
     });

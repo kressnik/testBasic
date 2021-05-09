@@ -1,9 +1,14 @@
 'use strict';
 const express = require('express');
-const { getAll } = require('../controllers/calculate.js');
+const { body } = require('express-validator');
+const { numberHandler } = require('../controllers/calculate.js');
 const router = express.Router();
 
-router.get('/api/calculate', getAll);
+router.post(
+  '/api/calculate',
+  body('number').trim().isNumeric().toInt(),
+  numberHandler
+);
 
 module.exports = router;
 

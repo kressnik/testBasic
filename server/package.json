@@ -11,6 +11,7 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-validator": "^6.10.1",
     "mysql2": "^2.2.5",
     "nodemon": "^2.0.7",
     "require-dir-all": "^0.4.15",
