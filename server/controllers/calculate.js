@@ -1,5 +1,6 @@
 'use strict';
 
+const { CalculationsClass } = require('../core/calculateClass');
 const { validationResult } = require('express-validator');
 
 const numberHandler = (req, res) => {
@@ -8,13 +9,12 @@ const numberHandler = (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
+  const calculation = new CalculationsClass({ number: req.body.number });
+  const data = calculation.get();
+
   res.status(200).json({
     code: 200,
-    data: {
-      number: 5,
-      median: 10,
-      arithmeticMean: 5
-    },
+    data,
     message: 'Calculation data successfully',
     messageCode: 'CALCULATION_DATA_OK',
     time: Date.now()
@@ -22,15 +22,13 @@ const numberHandler = (req, res) => {
 };
 
 const getHistoryHandler = (req, res) => {
+
+  const calculation = new CalculationsClass({});
+  const data = calculation.getHistory();
+
   res.status(200).json({
     code: 200,
-    data: [
-      {
-        number: 5,
-        median: 10,
-        arithmeticMean: 5
-      }
-    ],
+    data,
     message: 'Calculation history received successfully',
     messageCode: 'HISTORY_GET_OK',
     time: Date.now()
@@ -38,6 +36,9 @@ const getHistoryHandler = (req, res) => {
 };
 
 const deleteCalculateHandler = (req, res) => {
+  const calculation = new CalculationsClass({ id: 3 });
+  calculation.delete();
+
   res.status(200).json({
     code: 200,
     message: 'Removed calculation',
