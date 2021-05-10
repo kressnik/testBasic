@@ -3,8 +3,6 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
-const db = require('./models/index');
-const serverRoutes = require('./routers/index.js');
 
 const PORT = process.env.PORT || 3000;
 
@@ -12,6 +10,7 @@ startDB();
 
 async function startDB() {
   try {
+    const db = require('./models/index');
     await db.init();
 
     console.log('Database started');
@@ -25,6 +24,7 @@ async function startDB() {
 
 function startServer() {
   try {
+    const serverRoutes = require('./routers/index.js');
     const app = express();
 
     app.use(express.urlencoded({ extended: true }));

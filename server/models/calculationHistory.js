@@ -14,6 +14,17 @@ module.exports = (sequelize, DataTypes) => {
     });
   };
 
+  CalculationHistory.add = async function (data) {
+    try {
+      const result = await this.create(data);
+
+      return result.dataValues;
+    } catch (error) {
+      return error;
+    }
+
+  };
+
   return CalculationHistory;
 };
 

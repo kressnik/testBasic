@@ -1,7 +1,7 @@
 'use strict';
 
 const { MathematicsClass } = require('../core/mathematicsClass');
-
+const models = require('../models/index');
 
 class CalculationsClass {
   constructor({ number = null, id = null }) {
@@ -10,7 +10,7 @@ class CalculationsClass {
   }
 
   get() {
-    const calculate  = new MathematicsClass({
+    const calculate = new MathematicsClass({
       lengthArr: this.number,
       maxValue: 10 ** 5
     });
@@ -18,14 +18,17 @@ class CalculationsClass {
     calculate.createRandomArr();
     const arithmeticMean = calculate.calArithmeticMean();
     const median = calculate.calMedian();
+    const data = {
+      number: this.number,
+      median,
+      arithmeticMean
+    };
+
+    this.addHistoryToDB(data);
 
     return {
       status: 'OK',
-      data: {
-        number: this.number,
-        median,
-        arithmeticMean
-      }
+      data
     };
   }
 
@@ -43,6 +46,21 @@ class CalculationsClass {
         arithmeticMean: 5
       }
     ];
+  }
+
+  async addHistoryToDB({ number, median = null, arithmeticMean = null }) {
+    const resAddedNumber = await this.numberAddHistoryDB(number);
+    console.log(await this.resultAddHistoryDB(resAddedNumber.id, { median, arithmeticMean }));
+  }
+
+  async numberAddHistoryDB(number) {
+    return await models.calculationHistory.add({
+      number
+    });
+  }
+
+  async resultAddHistoryDB(idHistory, { median = null, arithmeticMean = null }) {
+    return await models.calculationResult.add(idHistory, { median, arithmeticMean });
   }
 }
 
