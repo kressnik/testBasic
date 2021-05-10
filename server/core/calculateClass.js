@@ -7,23 +7,12 @@ class CalculationsClass {
   constructor({ number = null, id = null }) {
     this.number = number;
     this.id = id;
+    this.history = null;
   }
 
   get() {
-    const calculate = new MathematicsClass({
-      lengthArr: this.number,
-      maxValue: 10 ** 5
-    });
 
-    calculate.createRandomArr();
-    const arithmeticMean = calculate.calArithmeticMean();
-    const median = calculate.calMedian();
-    const data = {
-      number: this.number,
-      median,
-      arithmeticMean
-    };
-
+    const data = this.calculateNumber(this.number);
     this.addHistoryToDB(data);
 
     return {
@@ -33,17 +22,42 @@ class CalculationsClass {
   }
 
   async delete() {
-    return await this.deleteHistoryToDB(this.id);
+    const result = await this.deleteHistoryToDB(this.id);
+    return {
+      status: 'OK',
+      message: result.message
+    };
   }
 
-  getHistory() {
-    return [
-      {
-        number: 5,
-        median: 10,
-        arithmeticMean: 5
-      }
-    ];
+  async getHistory() {
+    const data = await this.getHistoryToDB();
+    return {
+      status: 'OK',
+      data
+    };
+  }
+
+  calculateNumber(number) {
+    const calculate = new MathematicsClass({
+      lengthArr: number,
+      maxValue: 10 ** 5
+    });
+
+    calculate.createRandomArr();
+    const arithmeticMean = calculate.calArithmeticMean();
+    const median = calculate.calMedian();
+
+    return { number, median, arithmeticMean };
+  }
+
+  async getHistoryToDB() {
+    const res = await models.calculationHistory.getAll();
+    return res.data;
+  }
+
+  async getNumberToDB(id) {
+    const res = await models.calculationHistory.getNumber(id);
+    return res.data;
   }
 
   async deleteHistoryToDB(id) {
