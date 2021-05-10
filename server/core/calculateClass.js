@@ -32,10 +32,8 @@ class CalculationsClass {
     };
   }
 
-  delete() {
-    return {
-      status: 'OK'
-    };
+  async delete() {
+    return await this.deleteHistoryToDB(this.id);
   }
 
   getHistory() {
@@ -48,9 +46,13 @@ class CalculationsClass {
     ];
   }
 
+  async deleteHistoryToDB(id) {
+    return await models.calculationHistory.delete(id);
+  }
+
   async addHistoryToDB({ number, median = null, arithmeticMean = null }) {
     const resAddedNumber = await this.numberAddHistoryDB(number);
-    console.log(await this.resultAddHistoryDB(resAddedNumber.id, { median, arithmeticMean }));
+    await this.resultAddHistoryDB(resAddedNumber.id, { median, arithmeticMean });
   }
 
   async numberAddHistoryDB(number) {

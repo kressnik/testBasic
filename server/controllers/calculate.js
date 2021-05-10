@@ -35,13 +35,14 @@ const getHistoryHandler = (req, res) => {
   });
 };
 
-const deleteCalculateHandler = (req, res) => {
-  const calculation = new CalculationsClass({ id: 3 });
-  calculation.delete();
+const deleteCalculateHandler = async (req, res) => {
+  const id = req.params.id;
+  const calculation = new CalculationsClass({ id });
+  const result = await calculation.delete();
 
   res.status(200).json({
     code: 200,
-    message: 'Removed calculation',
+    message: result.message,
     messageCode: 'DELETE_OK',
     time: Date.now()
   });

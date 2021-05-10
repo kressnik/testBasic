@@ -1,6 +1,6 @@
 'use strict';
 const express = require('express');
-const { body } = require('express-validator');
+const { body, param } = require('express-validator');
 const { numberHandler, getHistoryHandler, deleteCalculateHandler } = require('../controllers/calculate.js');
 const router = express.Router();
 
@@ -17,6 +17,7 @@ router.get(
 
 router.delete(
   '/api/calculate/:id',
+  param('id').trim().isNumeric().toInt(),
   deleteCalculateHandler
 );
 

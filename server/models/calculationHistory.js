@@ -22,7 +22,25 @@ module.exports = (sequelize, DataTypes) => {
     } catch (error) {
       return error;
     }
+  };
 
+  CalculationHistory.delete = async function (id) {
+    try {
+      const res = await this.findByPk(id);
+
+      if (!res) {
+        return {
+          message: 'No item found in the database'
+        };
+      } else {
+        await res.destroy();
+        return {
+          message: 'Item removed from the database'
+        };
+      }
+    } catch (error) {
+      return error;
+    }
   };
 
   return CalculationHistory;
