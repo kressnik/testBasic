@@ -1,9 +1,9 @@
 'use strict';
 
-const getAll = (req, res) => {
+const statusServ = (req, res) => {
   res.status(200).json({
     status: 'OK'
   });
 };
 
-exports.getAll = getAll;
+exports.statusServ = statusServ;

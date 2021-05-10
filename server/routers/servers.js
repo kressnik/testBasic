@@ -1,9 +1,9 @@
 'use strict';
 const express = require('express');
-const { getAll } = require('../controllers/servers.js');
+const { statusServ } = require('../controllers/servers.js');
 const router = express.Router();
 
-router.get('/api/server', getAll);
+router.get('/server', statusServ);
 
 module.exports = router;
 
