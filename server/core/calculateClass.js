@@ -4,14 +4,14 @@ const { MathematicsClass } = require('../core/mathematicsClass');
 const models = require('../models/index');
 
 class CalculationsClass {
-  constructor({ number = null, id = null }) {
+  constructor({ number = null, id = null, dataArr = null }) {
     this.number = number;
     this.id = id;
+    this.dataArr = dataArr;
     this.history = null;
   }
 
   get() {
-
     const data = this.calculateNumber(this.number);
     this.addHistoryToDB(data);
 
@@ -48,6 +48,19 @@ class CalculationsClass {
     const median = calculate.calMedian();
 
     return { number, median, arithmeticMean };
+  }
+
+  calculateArr(arr) {
+    const array = arr || this.dataArr;
+    const calculate = new MathematicsClass({
+      maxValue: 10 ** 3,
+      dataArr: array
+    });
+
+    calculate.removeMaxVal();
+    const data = calculate.multiplicationArr();
+
+    return data;
   }
 
   async getHistoryToDB() {

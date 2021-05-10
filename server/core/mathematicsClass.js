@@ -43,6 +43,28 @@ class MathematicsClass {
 
     return newArr;
   }
+
+  multiplicationArr() {
+    return this.dataArr.map((val, index) => this.multiplicationNumbers(index));
+  }
+
+  multiplicationNumbers(numberElement) {
+    const notUseElement = numberElement || -1;
+
+    const data = this.dataArr.reduce((prev, val, index) => {
+      if (notUseElement === index) return prev;
+      if (!prev) return prev + parseFloat(val);
+
+      return prev * val;
+    }, 0);
+
+    return data;
+  }
+
+  removeMaxVal() {
+    this.dataArr = this.dataArr.filter(val => val >= 0 && val <= this.maxValue);
+    return this.dataArr;
+  }
 }
 
 exports.MathematicsClass = MathematicsClass;

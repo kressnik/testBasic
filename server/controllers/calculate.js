@@ -23,6 +23,26 @@ const numberHandler = (req, res) => {
 
 };
 
+const arrHandler = (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const calculation = new CalculationsClass({ dataArr: req.body.arr });
+
+  const result = calculation.calculateArr();
+
+  res.status(200).json({
+    code: 200,
+    data: result,
+    message: 'Calculation array successfully',
+    messageCode: 'CALCULATION_ARRAY_OK',
+    time: Date.now()
+  });
+
+};
+
 const getHistoryHandler = async (req, res) => {
 
   const calculation = new CalculationsClass({});
@@ -74,3 +94,4 @@ const deleteCalculateHandler = async (req, res) => {
 exports.numberHandler = numberHandler;
 exports.getHistoryHandler = getHistoryHandler;
 exports.deleteCalculateHandler = deleteCalculateHandler;
+exports.arrHandler = arrHandler;
