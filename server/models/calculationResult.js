@@ -1,13 +1,13 @@
 'use strict';
 
-const sequelize = require('../db/index');
-const { DataTypes } = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  const CalculationResult = sequelize.define('calculationResult', {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    type: { type: DataTypes.STRING, allowNull: false },
+    result: { type: DataTypes.DECIMAL, allowNull: false }
 
-const CalculationResult = sequelize.define('calculationResult', {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  type: { type: DataTypes.STRING, allowNull: false },
-  result: { type: DataTypes.DECIMAL, allowNull: false }
+  });
 
-});
+  return CalculationResult;
+};
 
-module.exports = CalculationResult;

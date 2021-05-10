@@ -3,8 +3,7 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
-const sequelize = require('./db/index.js');
-const models = require('./models/index');
+const db = require('./models/index');
 const serverRoutes = require('./routers/index.js');
 
 const PORT = process.env.PORT || 3000;
@@ -13,14 +12,13 @@ startDB();
 
 async function startDB() {
   try {
-    await sequelize.authenticate();
-    await sequelize.sync();
+    await db.init();
 
-    console.log('Database connected');
+    console.log('Database started');
 
     startServer();
   } catch (error) {
-    console.error('Database connect error');
+    console.error('Database started error');
     process.exit(-1);
   }
 }
