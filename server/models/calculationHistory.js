@@ -91,7 +91,8 @@ module.exports = (sequelize, DataTypes) => {
       const res = await this.findAll({
         include: [{
           model: this.sequelize.models.calculationResult,
-          as: 'calculationResults'
+          as: 'calculationResults',
+          order: [['id', 'DESC']],
         }]
       });
 
