@@ -4,6 +4,7 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const sequelize = require('./db/index.js');
+const models = require('./models/index');
 const serverRoutes = require('./routers/index.js');
 
 const PORT = process.env.PORT || 3000;
