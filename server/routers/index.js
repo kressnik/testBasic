@@ -18,7 +18,7 @@ async function useAll(routes) {
       // eslint-disable-next-line no-unused-vars
       for (const [key, route] of Object.entries(routes)) {
         if (typeof route === 'function') {
-          app.use(route);
+          app.use('/api/v1', route);
         } else {
           use(route);
         }

@@ -5,24 +5,24 @@ const { numberHandler, getHistoryHandler, deleteCalculateHandler, arrHandler } =
 const router = express.Router();
 
 router.post(
-  '/api/calculate',
+  '/calculate',
   body('number').trim().isNumeric().toInt(),
   numberHandler
 );
 
 router.get(
-  '/api/calculationHistory',
+  '/calculationHistory',
   getHistoryHandler
 );
 
 router.delete(
-  '/api/calculate/:id',
+  '/calculate/:id',
   param('id').trim().isNumeric().toInt(),
   deleteCalculateHandler
 );
 
 router.post(
-  '/api/calculateArr',
+  '/calculateArr',
   body('arr').isArray(),
   arrHandler
 );

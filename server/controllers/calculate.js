@@ -8,19 +8,27 @@ const numberHandler = (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
+  const { number } = req.body;
+  const calculation = new CalculationsClass({ number });
 
-  const calculation = new CalculationsClass({ number: req.body.number });
+  try {
+    const data = calculation.get();
 
-  const getRes = calculation.get();
-
-  res.status(200).json({
-    code: 200,
-    data: getRes.data,
-    message: 'Calculation data successfully',
-    messageCode: 'CALCULATION_DATA_OK',
-    time: Date.now()
-  });
-
+    res.status(200).json({
+      code: 200,
+      data,
+      message: 'Calculation data successfully',
+      messageCode: 'CALCULATION_DATA_OK',
+      time: Date.now()
+    });
+  } catch (error) {
+    res.status(500).json({
+      code: 500,
+      message: error.message,
+      messageCode: 'CALCULATION_DATA_ERROR',
+      time: Date.now()
+    });
+  }
 };
 
 const arrHandler = (req, res) => {
@@ -29,18 +37,26 @@ const arrHandler = (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const calculation = new CalculationsClass({ dataArr: req.body.arr });
+  try {
+    const dataArr = req.body.arr;
+    const calculation = new CalculationsClass({ dataArr });
+    const data = calculation.calculateArr();
 
-  const result = calculation.calculateArr();
-
-  res.status(200).json({
-    code: 200,
-    data: result,
-    message: 'Calculation array successfully',
-    messageCode: 'CALCULATION_ARRAY_OK',
-    time: Date.now()
-  });
-
+    res.status(200).json({
+      code: 200,
+      data,
+      message: 'Calculation array successfully',
+      messageCode: 'CALCULATION_ARRAY_OK',
+      time: Date.now()
+    });
+  } catch (error) {
+    res.status(500).json({
+      code: 500,
+      message: error.message,
+      messageCode: 'CALCULATION_ARRAY_ERROR',
+      time: Date.now()
+    });
+  }
 };
 
 const getHistoryHandler = async (req, res) => {
@@ -58,8 +74,8 @@ const getHistoryHandler = async (req, res) => {
       time: Date.now()
     });
   } catch (error) {
-    res.status(400).json({
-      code: 400,
+    res.status(500).json({
+      code: 500,
       message: error.message,
       messageCode: 'HISTORY_GET_ERROR',
       time: Date.now()
@@ -69,21 +85,21 @@ const getHistoryHandler = async (req, res) => {
 };
 
 const deleteCalculateHandler = async (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params;
   const calculation = new CalculationsClass({ id });
 
   try {
-    const result = await calculation.delete();
+    const { message } = await calculation.delete();
 
     res.status(200).json({
       code: 200,
-      message: result.message,
+      message,
       messageCode: 'DELETE_OK',
       time: Date.now()
     });
   } catch (error) {
-    res.status(400).json({
-      code: 400,
+    res.status(500).json({
+      code: 500,
       message: error.message,
       messageCode: 'DELETE_ERROR',
       time: Date.now()

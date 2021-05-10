@@ -8,15 +8,28 @@ class MathematicsClass {
   }
 
   createRandomArr() {
-    this.dataArr = Array.from(
+    const newArr = Array.from(
       { length: this.lengthArr },
       () => Math.floor(Math.random() * this.maxValue)
     );
-    return this.dataArr;
+
+    this.updateDataArr(newArr);
+    return newArr;
+  }
+
+  updateDataArr(arr) {
+    this.dataArr = arr;
+  }
+
+  claAll() {
+    const arithmeticMean = this.calArithmeticMean();
+    const median = this.calMedian();
+
+    return { arithmeticMean, median };
   }
 
   calArithmeticMean() {
-    const sum = this.dataArr.reduce((a, b) => (a + b));
+    const sum = this.dataArr.reduce((prev, val) => (prev + val));
     const arithmeticMean = sum / this.dataArr.length;
 
     return arithmeticMean;
@@ -37,7 +50,7 @@ class MathematicsClass {
   }
 
   sortUp(arr) {
-    const newArr = JSON.parse(JSON.stringify(arr));
+    const newArr = arr.slice();
 
     newArr.sort((a, b) => a - b);
 
@@ -62,8 +75,9 @@ class MathematicsClass {
   }
 
   removeMaxVal() {
-    this.dataArr = this.dataArr.filter(val => val >= 0 && val <= this.maxValue);
-    return this.dataArr;
+    const newArr = this.dataArr.filter(val => val >= 0 && val <= this.maxValue);
+    this.updateDataArr(newArr);
+    return newArr;
   }
 }
 

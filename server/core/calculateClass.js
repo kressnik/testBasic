@@ -15,10 +15,7 @@ class CalculationsClass {
     const data = this.calculateNumber(this.number);
     this.addHistoryToDB(data);
 
-    return {
-      status: 'OK',
-      data
-    };
+    return data;
   }
 
   async delete() {
@@ -30,56 +27,63 @@ class CalculationsClass {
   }
 
   async getHistory() {
-    const data = await this.getHistoryToDB();
-    return {
-      status: 'OK',
-      data
-    };
+    return await this.getHistoryToDB();
   }
 
-  calculateNumber(number) {
+  calculateNumber(lengthArr) {
     const calculate = new MathematicsClass({
-      lengthArr: number,
+      lengthArr,
       maxValue: 10 ** 5
     });
 
-    calculate.createRandomArr();
-    const arithmeticMean = calculate.calArithmeticMean();
-    const median = calculate.calMedian();
+    const newArr = calculate.createRandomArr();
+    calculate.updateDataArr(newArr);
+    const data = calculate.claAll();
 
-    return { number, median, arithmeticMean };
+    return { lengthArr, ...data };
   }
 
-  calculateArr(arr) {
-    const array = arr || this.dataArr;
+  calculateArr() {
     const calculate = new MathematicsClass({
       maxValue: 10 ** 3,
-      dataArr: array
+      dataArr: this.dataArr
     });
 
     calculate.removeMaxVal();
-    const data = calculate.multiplicationArr();
-
-    return data;
+    return calculate.multiplicationArr();
   }
 
   async getHistoryToDB() {
     const res = await models.calculationHistory.getAll();
-    return res.data;
+
+    if (res.isError) {
+      throw { message: 'An error occurred while receiving all data' };
+    }
+
+    return res;
   }
 
   async getNumberToDB(id) {
     const res = await models.calculationHistory.getNumber(id);
-    return res.data;
+
+    if (res.isError) {
+      throw { message: 'An error occurred while receiving data' };
+    }
+
+    return res;
   }
 
   async deleteHistoryToDB(id) {
-    return await models.calculationHistory.delete(id);
+    const res = await models.calculationHistory.delete(id);
+
+    if (res.isError) throw { message: res.message };
+
+    return res;
   }
 
   async addHistoryToDB({ number, median = null, arithmeticMean = null }) {
-    const resAddedNumber = await this.numberAddHistoryDB(number);
-    await this.resultAddHistoryDB(resAddedNumber.id, { median, arithmeticMean });
+    const { id } = await this.numberAddHistoryDB(number);
+    await this.resultAddHistoryDB({ id, median, arithmeticMean });
   }
 
   async numberAddHistoryDB(number) {
@@ -88,8 +92,8 @@ class CalculationsClass {
     });
   }
 
-  async resultAddHistoryDB(idHistory, { median = null, arithmeticMean = null }) {
-    return await models.calculationResult.add(idHistory, { median, arithmeticMean });
+  async resultAddHistoryDB({ idHistory = null, median = null, arithmeticMean = null }) {
+    return await models.calculationResult.add({ idHistory, median, arithmeticMean });
   }
 }
 

@@ -1,4 +1,11 @@
 'use strict';
+const snakeCaseToCamelCase = function (str) {
+  return str.split('_')
+    .reduce((res, word, i) => {
+      if (!i) return word.toLowerCase();
+      return `${res}${word.charAt(0).toUpperCase()}${word.substr(1).toLowerCase()}`;
+    }, '');
+};
 
 module.exports = (sequelize, DataTypes) => {
   const CalculationHistory = sequelize.define('calculationHistory', {
@@ -16,9 +23,9 @@ module.exports = (sequelize, DataTypes) => {
 
   CalculationHistory.add = async function (data) {
     try {
-      const result = await this.create(data);
+      const { dataValues } = await this.create(data);
 
-      return result.dataValues;
+      return dataValues;
     } catch (error) {
       return error;
     }
@@ -28,24 +35,19 @@ module.exports = (sequelize, DataTypes) => {
     try {
       const res = await this.findByPk(id);
 
-      if (!res) {
-        return {
-          message: 'No item found in the database'
-        };
-      } else {
-        await res.destroy();
-        return {
-          message: 'Item removed from the database'
-        };
-      }
+      if (!res) throw { message: 'No item found in the database' };
+
+      await res.destroy();
+      return { message: 'Item removed from the database' };
     } catch (error) {
+      error.isError = true;
       return error;
     }
   };
 
   CalculationHistory.getNumber = async function (id) {
     try {
-      const res = await this.findOne({
+      const { dataValues } = await this.findOne({
         include: [{
           model: this.sequelize.models.calculationResult,
           as: 'calculationResults'
@@ -53,35 +55,24 @@ module.exports = (sequelize, DataTypes) => {
         where: { id },
       });
 
-      if (!res) return { data: null };
+      if (!dataValues) return { data: null };
 
-      const resData = res.dataValues;
-      const calculationResults = resData.calculationResults;
-      let data = {
-        id: resData.id,
-        number: resData.number,
+      const calculationResults = dataValues.calculationResults;
+      const data = {
+        id: dataValues.id,
+        number: dataValues.number,
       };
 
-      data = calculationResults.reduce((previous, val) => {
-        const data = val.dataValues;
+      return calculationResults.reduce((previous, val) => {
+        const { dataValues } = val;
+        const type = snakeCaseToCamelCase(dataValues.type);
 
-        switch (data.type) {
-        case 'ARITHMETIC_MEAN':
-          previous.arithmeticMean = parseFloat(data.result);
-          break;
-        case 'MEDIAN':
-          previous.median = parseFloat(data.result);
-          break;
-        }
-
+        previous[type] = parseFloat(dataValues.result);
         return previous;
       }, { ...data });
 
-      return {
-        message: 'Number found in the database',
-        data
-      };
     } catch (error) {
+      error.isError = true;
       return error;
     }
   };
@@ -98,38 +89,26 @@ module.exports = (sequelize, DataTypes) => {
 
       if (!res) return { data: null };
 
-      const data = res.map(val => {
-        const resData = val.dataValues;
-        const calculationResults = resData.calculationResults;
+      return res.map(val => {
+        const { dataValues } = val;
+        const calculationResults = dataValues.calculationResults;
         let data = {
-          id: resData.id,
-          number: resData.number,
+          id: dataValues.id,
+          number: dataValues.number,
         };
 
         data = calculationResults.reduce((previous, val) => {
-          const data = val.dataValues;
+          const { dataValues } = val;
+          const type = snakeCaseToCamelCase(dataValues.type);
 
-          switch (data.type) {
-          case 'ARITHMETIC_MEAN':
-            previous.arithmeticMean = parseFloat(data.result);
-            break;
-          case 'MEDIAN':
-            previous.median = parseFloat(data.result);
-            break;
-          }
-
+          previous[type] = parseFloat(dataValues.result);
           return previous;
         }, { ...data });
 
         return data;
       });
-
-
-      return {
-        message: 'Number found in the database',
-        data
-      };
     } catch (error) {
+      error.isError = true;
       return error;
     }
   };
