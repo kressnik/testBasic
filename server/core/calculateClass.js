@@ -54,39 +54,23 @@ class CalculationsClass {
   }
 
   async getHistoryToDB() {
-    try {
-      const res = await models.calculationHistory.getAll();
-      return res;
-    } catch (error) {
-      throw { message: 'An error occurred while receiving all data' };
-    }
+    const res = await models.calculationHistory.getAll();
+    return res;
   }
 
   async getNumberToDB(id) {
-    try {
-      const res = await models.calculationHistory.getNumber(id);
-      return res;
-    } catch (error) {
-      throw { message: 'An error occurred while receiving data' };
-    }
+    const res = await models.calculationHistory.getNumber(id);
+    return res;
   }
 
   async deleteHistoryToDB(id) {
-    try {
-      const res = await models.calculationHistory.delete(id);
-      return res;
-    } catch (error) {
-      throw error.message;
-    }
+    const res = await models.calculationHistory.delete(id);
+    return res;
   }
 
   async addHistoryToDB({ number, median = null, arithmeticMean = null }) {
-    try {
-      const { id } = await this.numberAddHistoryDB(number);
-      await this.resultAddHistoryDB({ id, median, arithmeticMean });
-    } catch (error) {
-      throw error.message;
-    }
+    const { id } = await this.numberAddHistoryDB(number);
+    await this.resultAddHistoryDB({ id, median, arithmeticMean });
   }
 
   async numberAddHistoryDB(number) {

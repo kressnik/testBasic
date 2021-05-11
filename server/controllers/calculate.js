@@ -22,6 +22,7 @@ const numberHandler = (req, res) => {
       time: Date.now()
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       code: 500,
       message: error.message,
@@ -50,6 +51,7 @@ const arrHandler = (req, res) => {
       time: Date.now()
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       code: 500,
       message: error.message,
@@ -74,6 +76,7 @@ const getHistoryHandler = async (req, res) => {
       time: Date.now()
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       code: 500,
       message: error.message,
@@ -98,6 +101,7 @@ const deleteCalculateHandler = async (req, res) => {
       time: Date.now()
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       code: 500,
       message: error.message,
