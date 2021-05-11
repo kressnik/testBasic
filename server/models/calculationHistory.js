@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
   CalculationHistory.delete = async function (id) {
     const res = await this.findByPk(id);
 
-    if (!res) throw { message: 'No item found in the database' };
+    if (!res) throw new Error('No item found in the database');
 
     await res.destroy();
     return { message: 'Item removed from the database' };
