@@ -22,48 +22,66 @@ module.exports = (sequelize, DataTypes) => {
   };
 
   CalculationHistory.add = async function (data) {
-    try {
-      const { dataValues } = await this.create(data);
+    const { dataValues } = await this.create(data);
 
-      return dataValues;
-    } catch (error) {
-      return error;
-    }
+    return dataValues;
   };
 
   CalculationHistory.delete = async function (id) {
-    try {
-      const res = await this.findByPk(id);
+    const res = await this.findByPk(id);
 
-      if (!res) throw { message: 'No item found in the database' };
+    if (!res) throw { message: 'No item found in the database' };
 
-      await res.destroy();
-      return { message: 'Item removed from the database' };
-    } catch (error) {
-      error.isError = true;
-      return error;
-    }
+    await res.destroy();
+    return { message: 'Item removed from the database' };
   };
 
   CalculationHistory.getNumber = async function (id) {
-    try {
-      const { dataValues } = await this.findOne({
-        include: [{
-          model: this.sequelize.models.calculationResult,
-          as: 'calculationResults'
-        }],
-        where: { id },
-      });
+    const { dataValues } = await this.findOne({
+      include: [{
+        model: this.sequelize.models.calculationResult,
+        as: 'calculationResults'
+      }],
+      where: { id },
+    });
 
-      if (!dataValues) return { data: null };
+    if (!dataValues) return null;
 
+    const calculationResults = dataValues.calculationResults;
+    const data = {
+      id: dataValues.id,
+      number: dataValues.number,
+    };
+
+    return calculationResults.reduce((previous, val) => {
+      const { dataValues } = val;
+      const type = snakeCaseToCamelCase(dataValues.type);
+
+      previous[type] = parseFloat(dataValues.result);
+      return previous;
+    }, { ...data });
+  };
+
+  CalculationHistory.getAll = async function () {
+    const res = await this.findAll({
+      include: [{
+        model: this.sequelize.models.calculationResult,
+        as: 'calculationResults',
+        order: [['id', 'DESC']],
+      }]
+    });
+
+    if (!res) return null;
+
+    return res.map(val => {
+      const { dataValues } = val;
       const calculationResults = dataValues.calculationResults;
-      const data = {
+      let data = {
         id: dataValues.id,
         number: dataValues.number,
       };
 
-      return calculationResults.reduce((previous, val) => {
+      data = calculationResults.reduce((previous, val) => {
         const { dataValues } = val;
         const type = snakeCaseToCamelCase(dataValues.type);
 
@@ -71,46 +89,8 @@ module.exports = (sequelize, DataTypes) => {
         return previous;
       }, { ...data });
 
-    } catch (error) {
-      error.isError = true;
-      return error;
-    }
-  };
-
-  CalculationHistory.getAll = async function () {
-    try {
-      const res = await this.findAll({
-        include: [{
-          model: this.sequelize.models.calculationResult,
-          as: 'calculationResults',
-          order: [['id', 'DESC']],
-        }]
-      });
-
-      if (!res) return { data: null };
-
-      return res.map(val => {
-        const { dataValues } = val;
-        const calculationResults = dataValues.calculationResults;
-        let data = {
-          id: dataValues.id,
-          number: dataValues.number,
-        };
-
-        data = calculationResults.reduce((previous, val) => {
-          const { dataValues } = val;
-          const type = snakeCaseToCamelCase(dataValues.type);
-
-          previous[type] = parseFloat(dataValues.result);
-          return previous;
-        }, { ...data });
-
-        return data;
-      });
-    } catch (error) {
-      error.isError = true;
-      return error;
-    }
+      return data;
+    });
   };
 
   return CalculationHistory;

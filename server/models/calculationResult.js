@@ -8,28 +8,23 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   CalculationResult.add = async function (idHistory, { median = null, arithmeticMean = null }) {
-    try {
-      const data = [];
+    const data = [];
 
-      !median ? '' : data.push({
-        calculationResultId: idHistory,
-        type: 'MEDIAN',
-        result: median
-      });
+    !median ? '' : data.push({
+      calculationResultId: idHistory,
+      type: 'MEDIAN',
+      result: median
+    });
 
-      !arithmeticMean ? '' : data.push({
-        calculationResultId: idHistory,
-        type: 'ARITHMETIC_MEAN',
-        result: arithmeticMean
-      });
+    !arithmeticMean ? '' : data.push({
+      calculationResultId: idHistory,
+      type: 'ARITHMETIC_MEAN',
+      result: arithmeticMean
+    });
 
-      const result = await this.bulkCreate(data);
+    const result = await this.bulkCreate(data);
 
-      return result.map(val => val.dataValues);
-    } catch (error) {
-      return error;
-    }
-
+    return result.map(val => val.dataValues);
   };
 
   return CalculationResult;
